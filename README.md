@@ -31,6 +31,9 @@ from classes import *
 import re
 ```
 
+## Limitations
+This program is hard-coded to only search in the greater Los Angeles area. It also only pulls job postings from the first page of results from both websites. Basically, it's a prototype.
+
 ## License
 Copyright (c) 2022 Logan Willans
 
