@@ -12,20 +12,40 @@ linkedIn_new_job_postings = []
 indeed_old_job_postings = []
 indeed_new_job_postings = []
 
+# While loop variables
+successfullyParsedJobPostings = False
+counter = 0
+
+# String variables to hold get requests
+linkedIn_jobs = ""
+indeed_jobs = ""
+
 # Collect keyword from user
 keyword = sanitizeString(input("Enter the keyword you are looking for: "))
 
-# Append keyword to LinkedIn & Indeed request strings. Currently hard-coded to search for jobs in LA only.
-linkedIn_html_text = requests.get('https://www.linkedin.com/jobs/search/?geoId=90000049&keywords=' + keyword).text
-indeed_html_text = requests.get('https://www.indeed.com/jobs?q=' + keyword + '&l&vjk=39dd01f9a5283b99').text
+# While loop to try multiple times to pull the job postings from both websites because sometimes one website will not return results
+while not successfullyParsedJobPostings and counter < 2:
+    if counter > 0:
+        print('We need to try again!\n\n\n\n\n')
 
-# Get soup variables for the linkedIn and Indeed html requests
-linkedIn_soup = BeautifulSoup(linkedIn_html_text, 'lxml')
-indeed_soup = BeautifulSoup(indeed_html_text, 'lxml')
+    # Append keyword to LinkedIn & Indeed request strings. Currently hard-coded to search for jobs in LA only.
+    linkedIn_html_text = requests.get('https://www.linkedin.com/jobs/search/?geoId=90000049&keywords=' + keyword).text
+    indeed_html_text = requests.get('https://www.indeed.com/jobs?q=' + keyword + '&l&vjk=39dd01f9a5283b99').text
 
-# Get array of all job results
-linkedIn_jobs = linkedIn_soup.find_all('div', class_='base-card base-card--link base-search-card base-search-card--link job-search-card')
-indeed_jobs = indeed_soup.find_all('a', class_='tapItem')
+    # Get soup variables for the linkedIn and Indeed html requests
+    linkedIn_soup = BeautifulSoup(linkedIn_html_text, 'lxml')
+    indeed_soup = BeautifulSoup(indeed_html_text, 'lxml')
+
+    # Populate string variables with HTML
+    linkedIn_jobs = linkedIn_soup.find_all('div', class_='base-card base-card--link base-search-card base-search-card--link job-search-card')
+    indeed_jobs = indeed_soup.find_all('a', class_='tapItem')
+
+    # Check to see if job postings were successfully pulled from both websites. If not, loop executes two more times to try again.
+    if not linkedIn_jobs or not indeed_jobs:
+        successfullyParsedJobPostings = False
+        counter += 1
+    else:
+        successfullyParsedJobPostings = True
 
 for job in linkedIn_jobs:
     # Get job title
