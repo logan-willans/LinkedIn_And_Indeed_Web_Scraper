@@ -26,7 +26,7 @@ keyword = sanitizeString(input("Enter the keyword you are looking for: "))
 # While loop to try multiple times to pull the job postings from both websites because sometimes one website will not return results
 while not successfullyParsedJobPostings and counter < 2:
     if counter > 0:
-        print('We need to try again!\n\n\n\n\n')
+        print('Something went wrong... Trying again!\n\n\n\n\n')
 
     # Append keyword to LinkedIn & Indeed request strings. Currently hard-coded to search for jobs in LA only.
     linkedIn_html_text = requests.get('https://www.linkedin.com/jobs/search/?geoId=90000049&keywords=' + keyword).text
@@ -41,7 +41,10 @@ while not successfullyParsedJobPostings and counter < 2:
     indeed_jobs = indeed_soup.find_all('a', class_='tapItem')
 
     # Check to see if job postings were successfully pulled from both websites. If not, loop executes two more times to try again.
-    if not linkedIn_jobs or not indeed_jobs:
+    if not linkedIn_jobs:
+        successfullyParsedJobPostings = False
+        counter += 1
+    elif not indeed_jobs:
         successfullyParsedJobPostings = False
         counter += 1
     else:
