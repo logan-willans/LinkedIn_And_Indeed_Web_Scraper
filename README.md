@@ -14,12 +14,6 @@ pip install lxml
 pip install requests
 ```
 
-## Replit Link
-
-If you're not tech-savvy and simply want to use the software, click this link:
-
-https://replit.com/@willanlr8453/LinkedInAndIndeedWebScraper#main.py
-
 ## Usage
 Be sure the following import statements are included in the main file:
 
